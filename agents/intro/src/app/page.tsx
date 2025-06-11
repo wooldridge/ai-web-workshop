@@ -13,15 +13,42 @@ import { message } from "./actions";
 export default function Home() {
   const [inputMessage, setInputMessage] = useState("");
   const [messages, setMessages] = useState<BaseMessage[]>([
+
+    // For the Search MarkLogic tool
+    // new SystemMessage(`
+    //   You are a friendly assistant that answers questions about crime events. Please answer my questions thorougly and don't hallucinate.
+
+    //   When using the MarkLogic Search tool: always call the 'search_marklogic' to retrieve information about the crime events.
+
+    //   If the event information is not available, please say "I don't know" or "I don't have that information".
+    // `),
+
+    // For the general assistant tool
+    // new SystemMessage(`
+    //   You are a friendly assistant that answers questions. Please answer my questions thorougly and don't hallucinate.
+
+    //   If the event information is not available, please say "I don't know" or "I don't have that information".
+    // `),
+
+    // For the Google Places tool
     new SystemMessage(`
-      You are a friendly assistant. Please answer my questions thorougly and don't hallucinate.
+      You are an assistant that answers questions about places in San Francisco, California, with the Google Places tool. 
+      
+      Please answer questions by returning the latitude and longitude values for the location assuming it is located somewhere in San Francisco, California.
+
+      Return the values in JSON format like this: {"latitude": 37.7749, "longitude": -122.4194}.
+
+      If the event information is not available, please say "I don't know" or "I don't have that information".
     `),
   ]);
   const [isLoading, setIsLoading] = useState(false);
 
   async function sendMessage() {
+
     setIsLoading(true); // set to true
     const messageHistory = [...messages, new HumanMessage(inputMessage)];
+
+    console.log("sendMessage", inputMessage, messageHistory);
 
     const response = await message(
       mapChatMessagesToStoredMessages(messageHistory)
