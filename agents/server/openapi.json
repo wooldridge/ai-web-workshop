@@ -1,0 +1,97 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "FastTrack ChatBot Middle Tier"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:4013"
+    }
+  ],
+  "paths": {
+    "/api/fasttrack/chat": {
+      "post": {
+        "summary": "Return a response to a chat query",
+        "requestBody": {
+            "description": "An object containing the query text and an optional combined query object",
+            "required": true,
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "$ref": "#/components/schemas/ChatQuery"
+                    },
+                    "examples": {
+                        "Query": {
+                            "value": {
+                                "query": "What are the most commonly reported crimes?"
+                            }
+                        },
+                        "Query with combined query": {
+                            "value": {
+                                "query": "Is there a clothing pattern linking recent jewelry thefts?",
+                                "combinedQuery": {
+                                  "qtext": "robbery"
+                              }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "responses": {
+          "200": {
+            "description": "A response to the query with optional citations",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChatResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ChatQuery": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string"
+          },
+          "combinedQuery": {
+            "type": "object"
+          }
+        }
+      },
+      "ChatResponse": {
+        "type": "object",
+        "properties": {
+          "output": {
+            "type": "string"
+          },
+          "citations": {
+            "items": {
+              "$ref": "#/components/schemas/Citation"
+            },
+            "type": "array"
+          }
+        }
+      },
+      "Citation": {
+        "properties": {
+          "citationId": {
+            "type": "string"
+          },
+          "citationLabel": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    }
+  }
+}

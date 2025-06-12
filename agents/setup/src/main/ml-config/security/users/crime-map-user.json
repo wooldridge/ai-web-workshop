@@ -1,0 +1,8 @@
+{
+  "user-name": "ai-tools-mcp-user",
+  "password": "password",
+  "role": [
+    "crime-map-role",
+    "rest-extension-user"
+  ]
+}

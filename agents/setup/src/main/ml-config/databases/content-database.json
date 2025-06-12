@@ -1,0 +1,57 @@
+{
+  "database-name": "%%DATABASE%%",
+  "geospatial-element-pair-index": [
+    {
+      "parent-namespace-uri": "",
+      "parent-localname": "address",
+      "latitude-namespace-uri": "",
+      "latitude-localname": "lat",
+      "longitude-namespace-uri": "",
+      "longitude-localname": "lng",
+      "coordinate-system": "wgs84",
+      "range-value-positions": false,
+      "invalid-values": "reject"
+    }
+  ],
+  "field": [
+    {
+        "field-name": "",
+        "include-root": true,
+        "stemmed-searches": "basic"
+    }
+  ],
+  "range-element-index": [
+    {
+      "scalar-type": "dateTime",
+      "namespace-uri": "",
+      "localname": "time",
+      "collation": "",
+      "range-value-positions": false,
+      "invalid-values": "ignore"
+    },
+    {
+      "scalar-type": "string",
+      "namespace-uri": "",
+      "localname": "zip",
+      "collation": "http://marklogic.com/collation/codepoint",
+      "range-value-positions": false,
+      "invalid-values": "ignore"
+    },
+    {
+      "scalar-type": "string",
+      "namespace-uri": "",
+      "localname": "type",
+      "collation": "http://marklogic.com/collation/codepoint",
+      "range-value-positions": false,
+      "invalid-values": "ignore"
+    },
+    {
+      "scalar-type": "string",
+      "namespace-uri": "",
+      "localname": "caseId",
+      "collation": "http://marklogic.com/collation/codepoint",
+      "range-value-positions": false,
+      "invalid-values": "ignore"
+    }
+  ]
+}

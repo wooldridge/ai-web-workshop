@@ -1,0 +1,35 @@
+plugins {
+    id "net.saliman.properties" version "1.5.2"
+    id "com.marklogic.ml-gradle" version "4.7.0"
+}
+
+repositories {
+    mavenCentral()
+}
+
+configurations {
+    mlcp {
+        attributes {
+            attribute(TargetJvmEnvironment.TARGET_JVM_ENVIRONMENT_ATTRIBUTE, objects.named(TargetJvmEnvironment.class, TargetJvmEnvironment.STANDARD_JVM))
+        }
+    }
+}
+
+dependencies {
+    mlcp "com.marklogic:mlcp:11.1.0"
+    mlcp files("mlcp-logging")
+}
+
+task importEventsWithTranscript(type: com.marklogic.gradle.task.MlcpTask) {
+    classpath = configurations.mlcp
+    command = "IMPORT"
+    port = mlRestPort as Integer
+    username = "crime-map-user"
+    password = "password"
+    output_permissions = "crime-map-role,read,crime-map-role,update"
+    output_collections = "events-with-transcript"
+    input_file_path = "./data/events-with-transcript.json"
+    input_file_type = "delimited_json"
+}
+
+mlDeploy.finalizedBy importEventsWithTranscript

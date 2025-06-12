@@ -1,0 +1,51 @@
+{
+    "options": {
+        "constraint": [
+            {
+                "name": "type-constraint",
+                "range": {
+                    "type": "xs:string",
+                    "element": {
+                        "ns": "",
+                        "name": "type"
+                    }
+                }
+            },
+            {
+                "name": "zip",
+                "range": {
+                    "type": "xs:string",
+                    "element": {
+                        "ns": "",
+                        "name": "zip"
+                    }
+                }
+            },
+            {
+                "name": "time",
+                "range": {
+                    "collation": "",
+                    "type": "xs:dateTime",
+                    "element": {
+                        "name": "time",
+                        "ns": ""
+                    }
+                }
+            }
+        ],
+        "search-option": [
+            "unfiltered"
+        ],
+        "extract-document-data": {
+            "selected": "include"
+        },
+        "return-facets": true,
+        "return-query": true,
+        "transform-results": {
+            "apply": "snippet",
+            "per-match-tokens": "30",
+            "max-matches": "4",
+            "max-snippet-chars": "200"
+        }
+    }
+}
