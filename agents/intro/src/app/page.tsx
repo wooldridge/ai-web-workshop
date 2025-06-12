@@ -9,6 +9,7 @@ import {
   mapChatMessagesToStoredMessages,
 } from "@langchain/core/messages";
 import { message } from "./actions";
+import ReactMarkdown from 'react-markdown';
 
 export default function Home() {
   const [inputMessage, setInputMessage] = useState("");
@@ -23,6 +24,41 @@ export default function Home() {
     //   If the event information is not available, please say "I don't know" or "I don't have that information".
     // `),
 
+    // For the Crime Reports tool
+    new SystemMessage(`${new Date().toISOString()}
+      You are a friendly assistant that answers questions about crime reports. Please answer my questions thorougly and don't hallucinate.
+
+      When using the crime_reports tool, submit the query to the tool to retrieve information about the crime reports.
+      The crime_reports query should include the type of crime, start date, end date, radius, latitude, and longitude if available.
+      The crime_reports query should be in the format:
+      {
+        "qtext": "Descriptive string or phrase or keywords to search for in crime reports. These can include person names, locations, clothing, vehicles, or other descriptive keywords",
+        "type": "Type of crime report to search for. This is an array of strings, for example ['robbery', 'public intoxication'], the possible values are: ['assault', 'cybercrime', 'disturbing the peace', 'looting', 'public intoxication', 'robbery', 'shoplifting', 'vandalism', 'vehicle break-in']",
+        "start": "Start date for the search query in ISO 8601 date format, for example 2025-06-11T12:30:00-0700 format. The date can range from 2024-01-01T00:00:00-0700 to 2024-01-29T23:59:59-0700. Assume the start date is in this range.",
+        "end": "End date for the search query in ISO 8601 date format, for example 2025-06-11T12:30:00-0700 format. The date can range from 2024-01-01T00:00:00-0700 to 2024-01-29T23:59:59-0700. Assume the end date is in this range.",
+        "radius": "Radius in miles to search for crime reports around a specific location",
+        "latitude": "Latitude of the location to search for crime reports",
+        "longitude": "Longitude of the location to search for crime reports"
+      }
+
+      If you need to retrieve the latitude and longitude of a location, you can use the Google Places tool to get the latitude and longitude values for the location assuming it is located somewhere in San Francisco, California.
+      The Google Places tool should return the values in JSON format like this: {"latitude": 37.7749, "longitude": -122.4194}.
+      Use the latitude and longitude values to search for crime reports around a specific location.
+
+      Along with your response, include the number of reports you considered when determining your response.
+      
+      Along with your response, include a bulleted list of the crime reports that you used to answer the question.
+      The list should include the following information for each crime report:
+      - Crime Report ID
+      - Crime Report Type
+      - Crime Report Date
+      - Crime Report Location
+
+      Return the response in Markdown format.
+
+      If the event information is not available, please say "I don't know" or "I don't have that information".
+    `),
+
     // For the general assistant tool
     // new SystemMessage(`
     //   You are a friendly assistant that answers questions. Please answer my questions thorougly and don't hallucinate.
@@ -31,15 +67,15 @@ export default function Home() {
     // `),
 
     // For the Google Places tool
-    new SystemMessage(`
-      You are an assistant that answers questions about places in San Francisco, California, with the Google Places tool. 
+    // new SystemMessage(`
+    //   You are an assistant that answers questions about places in San Francisco, California, with the Google Places tool. 
       
-      Please answer questions by returning the latitude and longitude values for the location assuming it is located somewhere in San Francisco, California.
+    //   Please answer questions by returning the latitude and longitude values for the location assuming it is located somewhere in San Francisco, California.
 
-      Return the values in JSON format like this: {"latitude": 37.7749, "longitude": -122.4194}.
+    //   Return the values in JSON format like this: {"latitude": 37.7749, "longitude": -122.4194}.
 
-      If the event information is not available, please say "I don't know" or "I don't have that information".
-    `),
+    //   If the event information is not available, please say "I don't know" or "I don't have that information".
+    // `),
   ]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -105,7 +141,7 @@ export default function Home() {
                       AI
                     </div>
                     <div className="relative mr-3 text-sm bg-indigo-100 py-2 px-4 shadow rounded-xl">
-                      <div>{message.content as string}</div>
+                      <div><ReactMarkdown>{message.content as string}</ReactMarkdown></div>
                     </div>
                   </div>
                 </div>
