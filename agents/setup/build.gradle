@@ -24,7 +24,7 @@ task importEventsWithTranscript(type: com.marklogic.gradle.task.MlcpTask) {
     classpath = configurations.mlcp
     command = "IMPORT"
     port = mlRestPort as Integer
-    username = "crime-map-user"
+    username = "ai-tools-mcp-user"
     password = "password"
     output_permissions = "crime-map-role,read,crime-map-role,update"
     output_collections = "events-with-transcript"

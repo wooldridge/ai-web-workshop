@@ -34,8 +34,8 @@ export default function Home() {
       {
         "qtext": "Descriptive string or phrase or keywords to search for in crime reports. These can include person names, locations, clothing, vehicles, or other descriptive keywords",
         "type": "Type of crime report to search for. This is an array of strings, for example ['robbery', 'public intoxication'], the possible values are: ['assault', 'cybercrime', 'disturbing the peace', 'looting', 'public intoxication', 'robbery', 'shoplifting', 'vandalism', 'vehicle break-in']",
-        "start": "Start date for the search query in ISO 8601 date format, for example 2025-06-11T12:30:00-0700 format. The date can range from 2024-01-01T00:00:00-0700 to 2024-01-29T23:59:59-0700. Assume the start date is in this range.",
-        "end": "End date for the search query in ISO 8601 date format, for example 2025-06-11T12:30:00-0700 format. The date can range from 2024-01-01T00:00:00-0700 to 2024-01-29T23:59:59-0700. Assume the end date is in this range.",
+        "start": "Start date for the search query in ISO 8601 date format, for example 2025-06-11T12:30:00-0700 format. The date can range from 2024-01-01T00:00:00-0700 to 2024-03-31T23:59:59-0700. Assume the start date is in this range.",
+        "end": "End date for the search query in ISO 8601 date format, for example 2025-06-11T12:30:00-0700 format. The date can range from 2024-01-01T00:00:00-0700 to 2024-03-31T23:59:59-0700. Assume the end date is in this range.",
         "radius": "Radius in miles to search for crime reports around a specific location",
         "latitude": "Latitude of the location to search for crime reports",
         "longitude": "Longitude of the location to search for crime reports"

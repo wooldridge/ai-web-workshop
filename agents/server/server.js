@@ -33,7 +33,9 @@ app.post('/api/reports', (req, res) => {
     { algorithm: 'MD5' }
   );
 
-  const url = process.env.MARKLOGIC_BASE_PATH + 'v1/search?format=json&options=search-options';
+  const pageLength = process.env.PAGE_LENGTH || 10;
+
+  const url = process.env.MARKLOGIC_BASE_PATH + `v1/search?format=json&options=search-options&pageLength=${pageLength}`;
 
   const queries = [];
 
