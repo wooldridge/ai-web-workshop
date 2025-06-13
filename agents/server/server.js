@@ -11,7 +11,7 @@ import { getRelevantWords, buildWordQuery, buildCombinedQuery, postSearch, build
 import queryOptions from './queryOptions.json' assert { type: 'json' };
 import { STOP_WORDS } from './constants.js';
 
-config({path: "../.env"});
+config({path: "./.env"});
 const app = express();
 app.use(cors());
 app.use(bodyParser.json()); 
