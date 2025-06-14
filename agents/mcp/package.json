@@ -16,6 +16,7 @@
     "inspector": "npx @modelcontextprotocol/inspector node build/index.js"
   },
   "dependencies": {
+    "@langchain/community": "^0.3.46",
     "@modelcontextprotocol/sdk": "^1.11.3",
     "dotenv": "^16.4.5",
     "zod": "^3.24.4"

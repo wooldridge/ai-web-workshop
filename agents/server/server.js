@@ -50,7 +50,7 @@ app.post('/api/reports', (req, res) => {
 
   let typeQuery = {};
   if (type) {
-    typeQuery = buildRangeConstraintQuery('type-constraint', [type]);
+    typeQuery = buildRangeConstraintQuery('type-constraint', type);
     queries.push(typeQuery);
     console.log('Queries type:', JSON.stringify(queries, null, 2));
   }
