@@ -21,7 +21,7 @@ import { GooglePlacesAPI } from "@langchain/community/tools/google_places";
 
 export async function message(messages: StoredMessage[]) {
 
-  console.log("messages", messages);
+  // console.log("messages", messages);
 
   const deserialized = mapStoredMessagesToChatMessages(messages);
 
@@ -94,8 +94,6 @@ export async function message(messages: StoredMessage[]) {
     async (input) => {
           if (!input.query) return "No search query provided";
 
-          // http://localhost:8080/v1/search?options=search-options&format=json&q=Jane
-
           const tokens = input.query.split(" ");
           const tokens_punctuation_removed = tokens.map((token) => {
               return token.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "");
@@ -107,18 +105,8 @@ export async function message(messages: StoredMessage[]) {
               return !stopwords.includes(token);
           });
 
-          console.log('tokens_stopwords_removed', tokens_stopwords_removed);
-
-          console.log('tokens_stopwords_removed string', tokens_stopwords_removed.join(" "));
-
           try {
               const response = await fetch(
-                  // `http://localhost:8080/v1/search?options=search-options&format=json&q=${encodeURIComponent(
-                  //     input.query,
-                  // )}`,
-                  // `http://localhost:8080/v1/search?options=search-options&format=json&q=${encodeURIComponent(
-                  //   tokens_stopwords_removed.join(" "),
-                  // )}`,
                   `http://localhost:8080/v1/search?options=search-options&format=json&q=${tokens_stopwords_removed.join(" ")}`,
                   {
                     method:'GET', 
@@ -163,8 +151,6 @@ export async function message(messages: StoredMessage[]) {
             longitude: input.longitude
           };
 
-          console.log('body!!!', JSON.stringify(body));
-
           try {
               const response = await fetch(
                   `http://localhost:4014/api/reports`,
@@ -180,8 +166,6 @@ export async function message(messages: StoredMessage[]) {
 
               const data = await response.json();
 
-              // console.log('data', data);
-
               const extractedData = data?.results?.map((result: any) => {
                 return {
                   id: result.extracted.content[0].id,
@@ -192,11 +176,8 @@ export async function message(messages: StoredMessage[]) {
                 }
               });
 
-              console.log(extractedData);
-
               return JSON.stringify(extractedData);
 
-              // return JSON.stringify(data?.results);
           } catch (e) {
               return "Something went wrong.";
           }
@@ -228,7 +209,17 @@ export async function message(messages: StoredMessage[]) {
       messages: deserialized,
   });
 
-  console.dir(response, { depth: null });
+  // console.dir(response, { depth: null });
+
+  response.messages.forEach((message, index) => {
+    console.log(message.constructor.name);
+    console.log(message.name);
+    if (message.lc_kwargs.tool_calls) {
+      console.dir(message.lc_kwargs.tool_calls, { depth: null });
+    }
+    console.dir(message.content.toString().substring(0, 500), { depth: null });
+    console.dir(' ---------------------------------------------------------- ');
+  })
 
   return response.messages[response.messages.length - 1].content;
 }
