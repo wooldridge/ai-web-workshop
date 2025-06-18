@@ -13,6 +13,7 @@
     "@langchain/core": "^0.3.36",
     "@langchain/langgraph": "^0.2.41",
     "@langchain/ollama": "^0.1.5",
+    "ml-fasttrack": "file:ml-fasttrack-1.1.0.tgz",
     "next": "15.1.6",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

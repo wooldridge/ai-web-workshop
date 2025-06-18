@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   HumanMessage,
   SystemMessage,
@@ -9,22 +9,32 @@ import {
   mapChatMessagesToStoredMessages,
 } from "@langchain/core/messages";
 import { message } from "./actions";
-import ReactMarkdown from 'react-markdown';
+import { ChatBot } from "ml-fasttrack";
 
 export default function Home() {
-  const [inputMessage, setInputMessage] = useState("");
-  const [messages, setMessages] = useState<BaseMessage[]>([
 
-    // For the Search MarkLogic tool
-    // new SystemMessage(`
-    //   You are a friendly assistant that answers questions about crime events. Please answer my questions thorougly and don't hallucinate.
+  const bot = {
+    id: 0,
+    name: "Crime Reports Bot",
+    avatarUrl: ""
+  }
 
-    //   When using the MarkLogic Search tool: always call the 'search_marklogic' to retrieve information about the crime events.
+  const user = { 
+    id: 1, 
+    name: "Detective", 
+    avatarUrl: "" 
+  }
 
-    //   If the event information is not available, please say "I don't know" or "I don't have that information".
-    // `),
+  const initialMessages = [
+    {
+      author: bot,
+      timestamp: new Date(),
+      text: "Hello, ask me about crime reports.",
+    }
+  ];
 
-    // For the Crime Reports tool
+  const [messagesDisplayed, setMessagesDisplayed] = useState<any>(initialMessages);
+  const [messages, setMessages] = useState<any>([
     new SystemMessage(`${new Date().toISOString()}
       You are a friendly assistant that answers questions about crime reports. Please answer my questions thorougly and don't hallucinate.
 
@@ -37,133 +47,75 @@ export default function Home() {
       Use the latitude and longitude values to search for crime reports around a specific location.
 
       Along with your response, include the number of reports you considered when determining your response.
-      
-      Along with your response, include a bulleted list of the crime reports that you used to answer the question.
-      The list should include the following information for each crime report:
-      - Crime Report ID
-      - Crime Report Type
-      - Crime Report Date
-      - Crime Report Location
 
-      Return the response in Markdown format.
+      Also include phone numbers of the locations if they are available from the Google Places tool.
 
       If the event information is not available, please say "I don't know" or "I don't have that information".
-    `),
-
-    // For the general assistant tool
-    // new SystemMessage(`
-    //   You are a friendly assistant that answers questions. Please answer my questions thorougly and don't hallucinate.
-
-    //   If the event information is not available, please say "I don't know" or "I don't have that information".
-    // `),
-
-    // For the Google Places tool
-    // new SystemMessage(`
-    //   You are an assistant that answers questions about places in San Francisco, California, with the Google Places tool. 
-      
-    //   Please answer questions by returning the latitude and longitude values for the location assuming it is located somewhere in San Francisco, California.
-
-    //   Return the values in JSON format like this: {"latitude": 37.7749, "longitude": -122.4194}.
-
-    //   If the event information is not available, please say "I don't know" or "I don't have that information".
-    // `),
+    `)
   ]);
-  const [isLoading, setIsLoading] = useState(false);
 
-  async function sendMessage() {
+  /* 
+  Questions:
+  - Did Jane Doe commit crimes associated with obnoxiousness on a holiday weekend in January?
+  - Did Jane Smith and a person named Joe commit similar crimes near Fishermans Wharf in Mar.?
+  - Did a suspect wearing jeans commit any crimes at mall in the Market St. area?
+  - Who committed more property crimes in February, Joe Schmoe or Joe Blow?
+  */
 
-    setIsLoading(true); // set to true
-    const messageHistory = [...messages, new HumanMessage(inputMessage)];
+  const handlescroll = () => {
+    setTimeout(() => {
+      const messageList = document.querySelector(".k-message-list");
+      if (messageList) {
+        messageList.scrollTop = messageList.scrollHeight;
+      }
+    });
+  }
 
-    console.log("sendMessage", inputMessage, messageHistory);
+  async function sendMessage(event: any) {
 
+    const messageHistory = [...messages, new HumanMessage(event.message.text)];
+
+    // Add the user's message to the displayed messages and show the bot typing
+    setMessagesDisplayed((oldMessages: any) => [...oldMessages, event.message]);
+    setMessagesDisplayed((oldMessages: any) => [...oldMessages,
+      {
+        author: bot,
+        typing: true,
+      }
+    ]);
+    handlescroll();
+
+    // Get the bot's response and add it to the message history
     const response = await message(
       mapChatMessagesToStoredMessages(messageHistory)
     );
-
     if (response) {
       messageHistory.push(new AIMessage(response as string));
     }
-
     setMessages(messageHistory);
-    setInputMessage("");
-    setIsLoading(false); // set to false
+
+    // Show the bot's response in the chat
+    setMessagesDisplayed((oldMessages: any) => [...oldMessages,
+      {
+        author: bot,
+        timestamp: new Date(),
+        text: response,
+      }
+    ])
+
+    handlescroll();
   }
 
   return (
-    <div className="flex flex-col h-screen justify-between">
-      <header className="bg-white p-2">
-        <div className="flex lg:flex-1 items-center justify-center">
-          <a href="#" className="m-1.5">
-            <span className="sr-only">My First Agent</span>
-          </a>
-          <h1 className="text-black font-bold">My First Agent</h1>
-        </div>
-      </header>
-      <div className="flex flex-col h-full">
-        {messages.length > 0 &&
-          messages.map((message, index) => {
-            if (message instanceof HumanMessage) {
-              return (
-                <div
-                  key={message.getType() + index}
-                  className="col-start-1 col-end-8 p-3 rounded-lg"
-                >
-                  <div className="flex flex-row items-center">
-                    <div className="flex items-center justify-center h-8 w-8 rounded-full bg-orange-400 text-white flex-shrink-0 text-sm">
-                      Me
-                    </div>
-                    <div className="relative ml-3 text-sm bg-white py-2 px-4 shadow rounded-xl">
-                      <div>{message.content as string}</div>
-                    </div>
-                  </div>
-                </div>
-              );
-            }
 
-            if (message instanceof AIMessage) {
-              return (
-                <div
-                  key={message.getType() + index}
-                  className="col-start-6 col-end-13 p-3 rounded-lg"
-                >
-                  <div className="flex items-center justify-start flex-row-reverse">
-                    <div className="flex items-center justify-center h-8 w-8 rounded-full bg-green-400 flex-shrink-0 text-sm">
-                      AI
-                    </div>
-                    <div className="relative mr-3 text-sm bg-indigo-100 py-2 px-4 shadow rounded-xl">
-                      <div><ReactMarkdown>{message.content as string}</ReactMarkdown></div>
-                    </div>
-                  </div>
-                </div>
-              );
-            }
-          })}
-      </div>
-      <div className="flex flex-col flex-auto justify-between bg-gray-100 p-6">
-        <div className="top-[100vh] flex flex-row items-center h-16 rounded-xl bg-white w-full px-4">
-          <div className="flex-grow ml-4">
-            <div className="relative w-full">
-              <input
-                type="text"
-                disabled={isLoading}
-                value={inputMessage}
-                onChange={(e) => setInputMessage(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-                className="flex w-full border rounded-xl focus:outline-none focus:border-indigo-300 pl-4 h-10"
-              />
-            </div>
-          </div>
-          <div className="ml-4">
-            <button
-              onClick={sendMessage}
-              className="flex items-center justify-center bg-indigo-500 hover:bg-indigo-600 rounded-xl text-white px-4 py-2 flex-shrink-0"
-            >
-              <span>{isLoading ? "Loading..." : "Send"}</span>
-            </button>
-          </div>
-        </div>
-      </div>
+    <div>
+      <ChatBot 
+        messages={messagesDisplayed}
+        onMessageSend={sendMessage}
+        customBotResponse
+        showRestart
+        width={800}
+      />
     </div>
   );
 }
