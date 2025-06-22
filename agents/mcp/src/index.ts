@@ -83,7 +83,7 @@ server.tool(
 );
 
 server.tool(
-  "crime_reports_with_object",
+  "crime_reports",
   "Search for crime reports based on a query",
   {
     input: z.object({
@@ -146,67 +146,67 @@ server.tool(
 // server.tool(
 //   "google_places",
 //   "Search for places in San Francisco, California",
-//   async ({ input }) => {
+//   async (input) => {
 //     const googlePlaces = new GooglePlacesAPI({ apiKey: process.env.GOOGLE_PLACES_API_KEY });
 //     const results = await googlePlaces.searchPlaces(input);
 //     return { content: [{ type: "text", text: JSON.stringify(results) }] };
 //   }
 // )
 // MCP Server Tool Definition
-server.tool(
-  "search_wikipedia",
-  "Search information on Wikipedia",
-  {
-    query: z.string().describe("Search query"),
-  },
-  async ({ query }) => {
-    try {
-      if (!query) throw new Error();
+// server.tool(
+//   "search_wikipedia",
+//   "Search information on Wikipedia",
+//   {
+//     query: z.string().describe("Search query"),
+//   },
+//   async ({ query }) => {
+//     try {
+//       if (!query) throw new Error();
 
-      const response = await fetch(
-        `https://en.wikipedia.org/w/api.php?action=query&format=json&list=search&formatversion=2&srsearch=${encodeURIComponent(
-          query
-        )}`
-      );
+//       const response = await fetch(
+//         `https://en.wikipedia.org/w/api.php?action=query&format=json&list=search&formatversion=2&srsearch=${encodeURIComponent(
+//           query
+//         )}`
+//       );
 
-      const data = await response.json();
-      console.log("search_wikipedia", { data });
+//       const data = await response.json();
+//       console.log("search_wikipedia", { data });
 
-      return {
-        content: [{ type: "text", text: JSON.stringify(data?.query?.search) }],
-      };
-    } catch (e) {
-      return { content: [{ type: "text", text: "Something went wrong." }] };
-    }
-  }
-);
+//       return {
+//         content: [{ type: "text", text: JSON.stringify(data?.query?.search) }],
+//       };
+//     } catch (e) {
+//       return { content: [{ type: "text", text: "Something went wrong." }] };
+//     }
+//   }
+// );
 
 // MCP Server Tool Definition
-server.tool(
-  "get_wikipedia_page",
-  "Retrieve a specific page from Wikipedia",
-  {
-    pageId: z.string().describe("Page id"),
-  },
-  async ({ pageId }) => {
-    try {
-      if (!pageId) throw new Error();
+// server.tool(
+//   "get_wikipedia_page",
+//   "Retrieve a specific page from Wikipedia",
+//   {
+//     pageId: z.string().describe("Page id"),
+//   },
+//   async ({ pageId }) => {
+//     try {
+//       if (!pageId) throw new Error();
 
-      const response = await fetch(
-        `https://en.wikipedia.org/w/api.php?action=parse&format=json&pageid=${pageId}&formatversion=2`
-      );
+//       const response = await fetch(
+//         `https://en.wikipedia.org/w/api.php?action=parse&format=json&pageid=${pageId}&formatversion=2`
+//       );
 
-      const data = await response.json();
-      console.log("get_wikipedia_page", { data });
+//       const data = await response.json();
+//       console.log("get_wikipedia_page", { data });
 
-      return {
-        content: [{ type: "text", text: JSON.stringify(data?.parse?.text) }],
-      };
-    } catch (e) {
-      return { content: [{ type: "text", text: "Something went wrong." }] };
-    }
-  }
-);
+//       return {
+//         content: [{ type: "text", text: JSON.stringify(data?.parse?.text) }],
+//       };
+//     } catch (e) {
+//       return { content: [{ type: "text", text: "Something went wrong." }] };
+//     }
+//   }
+// );
 
 async function main() {
   const transport = new StdioServerTransport();

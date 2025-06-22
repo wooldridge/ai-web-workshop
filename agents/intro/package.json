@@ -12,12 +12,15 @@
     "@langchain/community": "^0.3.35",
     "@langchain/core": "^0.3.36",
     "@langchain/langgraph": "^0.2.41",
+    "@langchain/mcp-adapters": "^0.5.2",
     "@langchain/ollama": "^0.1.5",
+    "@modelcontextprotocol/sdk": "^1.13.0",
     "ml-fasttrack": "file:ml-fasttrack-1.1.0.tgz",
     "next": "15.1.6",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-markdown": "^10.1.0"
+    "react-markdown": "^10.1.0",
+    "zod-to-json-schema": "^3.24.5"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

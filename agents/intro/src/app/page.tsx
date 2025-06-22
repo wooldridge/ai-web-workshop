@@ -42,13 +42,9 @@ export default function Home() {
       The crime_reports query should include the type of crime, start date, end date, radius, latitude, and longitude if available.
       The query should be in the format described in the tool definition.
 
-      If you need to retrieve the latitude and longitude of a location, you can use the Google Places tool to get the latitude and longitude values for the location assuming it is located somewhere in San Francisco, California.
-      The Google Places tool should return the values in JSON format like this: {"latitude": 37.7749, "longitude": -122.4194}.
-      Use the latitude and longitude values to search for crime reports around a specific location.
+      If you need geolocation information, you can use the google-maps tool to get the latitude and longitude of a location.
 
       Along with your response, include the number of reports you considered when determining your response.
-
-      Also include phone numbers of the locations if they are available from the Google Places tool.
 
       If the event information is not available, please say "I don't know" or "I don't have that information".
     `)
