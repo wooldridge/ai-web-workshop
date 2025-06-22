@@ -36,7 +36,7 @@ export async function message(messages: StoredMessage[]) {
         "command": "npx",
         "args": ["-y", "@modelcontextprotocol/server-google-maps"],
         "env": {
-          "GOOGLE_MAPS_API_KEY": "AIzaSyDJNI3nYoJtvBfZLFLYJHGBqJPO6OIQB68"
+          "GOOGLE_MAPS_API_KEY": "API KEY HERE" // Replace with your actual Google Maps API key
         }
       },
     },
