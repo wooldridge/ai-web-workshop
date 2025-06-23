@@ -3,6 +3,7 @@
   "password": "password",
   "role": [
     "crime-map-role",
-    "rest-extension-user"
+    "rest-extension-user",
+    "manage-admin"
   ]
 }

@@ -46,7 +46,20 @@ export default function Home() {
 
       Along with your response, include the number of reports you considered when determining your response.
 
-      If the event information is not available, please say "I don't know" or "I don't have that information".
+      If the report information is not available, please say "I don't know" or "I don't have that information".
+
+      You can use the get_database_properties tool to get the properties of a MarkLogic database. 
+      If you receive a request for details about a MarkLogic database, you can retrieve the properties and inspect them to answer 
+      the question.
+
+      You can use the create_document tool to create a new document in a MarkLogic database. If no permissions are specified, use the value ["crime-map-role=read", "crime-map-role=update"]. Always include the value "ai-created" as a value in the collection array when creating a document.
+
+      After each question you answer, save a document in the MarkLogic database with the following properties:
+      - uri: The current date and time in ISO 8601 format, for example 2025-06-11T12:30:00-0700, with a ".json" suffix.
+      - content: The question you answered, for example "Did Jane Doe commit crimes associated with obnoxiousness on a holiday weekend in January?", and the answer you provided, for example "Yes, Jane Doe committed crimes associated with obnoxiousness on a holiday weekend in January. I considered 5 reports to determine this.".
+      - database: "ai-tools-mcp-content"
+      - collections: ["ai-created", "log"]
+      - permissions: ["crime-map-role=read", "crime-map-role=update"]
     `)
   ]);
 

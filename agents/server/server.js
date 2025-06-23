@@ -34,8 +34,9 @@ app.post('/api/reports', (req, res) => {
   );
 
   const pageLength = process.env.PAGE_LENGTH || 10;
+  const collection = process.env.CONTENT_COLLECTION || 'events-with-transcript';
 
-  const url = process.env.MARKLOGIC_BASE_PATH + `v1/search?format=json&options=search-options&pageLength=${pageLength}`;
+  const url = process.env.MARKLOGIC_BASE_PATH + `v1/search?format=json&options=search-options&collection=${collection}&pageLength=${pageLength}`;
 
   const queries = [];
 
@@ -116,6 +117,162 @@ app.post('/api/nearby', (req, res) => {
   postSearch(digestClient, url, combinedQuery).then((searchResponse) => {
     res.send(searchResponse);
   })
+
+});
+
+app.post('/api/databases', (req, res) => {
+
+  console.log('/api/databases');
+
+  const { name } = req.body;
+
+  const url = process.env.MARKLOGIC_MGMT_PATH + `manage/v2/databases?format=json`;
+
+  const digestClient = new DigestClient(
+    process.env.MARKLOGIC_USERNAME, 
+    process.env.MARKLOGIC_PASSWORD, 
+    { algorithm: 'MD5' }
+  );
+
+  const options = {
+    method: 'POST',
+    body: JSON.stringify({"database-name": name}),
+    auth: {
+        username: 'ai-tools-mcp-user',
+        password: 'password'
+    },
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+  };
+  try {
+    digestClient.fetch(url, options).then((response) => {
+      if (response.status !== 201) {
+        console.error(`Request failed with status ${response.status}: ${response.statusText}`);
+        return;
+      }
+      res.send(JSON.stringify({
+        message: `Database ${name} created successfully`,
+        status: response.status,
+        statusText: response.statusText
+      }));
+    })
+  } catch (error) {
+    throw error;
+  }
+
+});
+
+app.get('/api/databases', (req, res) => {
+
+  console.log('/api/databases');
+
+  const name = req.query.name;
+
+  console.log('Database Name:', name);
+
+  const url = process.env.MARKLOGIC_MGMT_PATH + `manage/v2/databases/${name}/properties?format=json`;
+
+  console.log('URL:', url);
+
+  const digestClient = new DigestClient(
+    process.env.MARKLOGIC_USERNAME, 
+    process.env.MARKLOGIC_PASSWORD, 
+    { algorithm: 'MD5' }
+  );
+
+  const options = {
+    method: 'GET',
+    auth: {
+        username: 'ai-tools-mcp-user',
+        password: 'password'
+    },
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+  };
+  try {
+    digestClient.fetch(url, options).then((response) => {
+      if (response.status !== 200) {
+        console.error(`Request failed with status ${response.status}: ${response.statusText}`);
+        return;
+      }
+      response.json().then((data) => res.send(data));
+    })
+  } catch (error) {
+    throw error;
+  }
+
+});
+
+app.put('/api/documents', (req, res) => {
+
+  console.log('/api/documents');
+
+  const { uri, content, database, collections, permissions } = req.body;
+
+  let url = process.env.MARKLOGIC_BASE_PATH + `v1/documents?format=json&uri=${encodeURIComponent(uri)}`;
+
+  if (database) {
+    url += `&database=${encodeURIComponent(database)}`;
+  }
+
+  if (collections && collections.length > 0) {
+    collections.forEach((collection) => {
+      url += `&collection=${encodeURIComponent(collection)}`;
+    });
+  }
+
+  if (permissions && permissions.length > 0) {
+    permissions.forEach((permission) => {
+      const parts = permission.split('=');
+      url += `&perm:${encodeURIComponent(parts[0])}=${encodeURIComponent(parts[1])}`;
+    });
+  }
+
+  console.log('URL:', url);
+
+  const digestClient = new DigestClient(
+    process.env.MARKLOGIC_USERNAME, 
+    process.env.MARKLOGIC_PASSWORD, 
+    { algorithm: 'MD5' }
+  );
+
+  const body = JSON.stringify({
+    ts: new Date().toISOString(),
+    content
+  });
+  console.log('body:', body);
+
+  const options = {
+    method: 'PUT',
+    body: body,
+    auth: {
+        username: 'ai-tools-mcp-user',
+        password: 'password'
+    },
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+  };
+  try {
+    digestClient.fetch(url, options).then((response) => {
+      if (response.status !== 201 && response.status !== 204) {
+        console.error(`Request failed with status ${response.status}: ${response.statusText}`);
+        return;
+      }
+      res.send(JSON.stringify({
+        message: `Document ${uri} created successfully`,
+        status: response.status,
+        statusText: response.statusText
+      }));
+    })
+  } catch (error) {
+    throw error;
+  }
 
 });
 
